@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | UITH Physiotherapy Scheduling System</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">UITH Physio</div>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i data-feather="menu"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="#dashboard" class="sidebar-item active">
+                    <i data-feather="home"></i> Dashboard
+                </a>
+                <a href="#schedule" class="sidebar-item">
+                    <i data-feather="calendar"></i> My Schedule
+                </a>
+                <a href="#requests" class="sidebar-item">
+                    <i data-feather="file-text"></i> My Requests
+                </a>
+                <a href="#notifications" class="sidebar-item">
+                    <i data-feather="bell"></i> Notifications
+                    <span class="badge" id="notification-badge" style="display: none;">0</span>
+                </a>
+                <a href="#profile" class="sidebar-item">
+                    <i data-feather="user"></i> Profile
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <button id="logout-button" class="btn btn-outline" style="width: 100%;">
+                    <i data-feather="log-out"></i> Logout
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <div class="content-header">
+                <div class="header-left">
+                    <button id="mobile-toggle" class="sidebar-toggle mobile-only" aria-label="Toggle sidebar" aria-expanded="false">
+                        <i data-feather="menu"></i>
+                    </button>
+                    <h1 id="welcome-message">Welcome!</h1>
+                </div>
+                
+                <div class="user-profile">
+                    <div class="user-menu" id="user-menu">
+                        <div class="user-avatar" id="user-avatar">JS</div>
+                        <div class="user-name" id="user-name">John Smith</div>
+                        <i data-feather="chevron-down"></i>
+                    </div>
+                    
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="/views/profile.html" class="user-dropdown-item">
+                            <i data-feather="user"></i> Profile
+                        </a>
+                        <a href="/views/settings.html" class="user-dropdown-item">
+                            <i data-feather="settings"></i> Settings
+                        </a>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="#" class="user-dropdown-item" id="logout-button-dropdown">
+                            <i data-feather="log-out"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="content-section">
+                <div class="dashboard-cards">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <div class="dashboard-card-icon">
+                                <i data-feather="calendar"></i>
+                            </div>
+                            <h3 class="dashboard-card-title">My Shifts</h3>
+                        </div>
+                        <div class="dashboard-card-value" id="shift-count">0</div>
+                        <div class="dashboard-card-description">Upcoming shifts assigned to you</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <div class="dashboard-card-icon">
+                                <i data-feather="file-text"></i>
+                            </div>
+                            <h3 class="dashboard-card-title">Contract Type</h3>
+                        </div>
+                        <div class="dashboard-card-value" id="contract-type">Full-time</div>
+                        <div class="dashboard-card-description">Your employment contract type</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <div class="dashboard-card-icon">
+                                <i data-feather="clock"></i>
+                            </div>
+                            <h3 class="dashboard-card-title">Next Shift</h3>
+                        </div>
+                        <div id="next-shift">
+                            <div class="dashboard-card-value" id="next-shift-date">--</div>
+                            <div class="dashboard-card-description" id="next-shift-time">No upcoming shifts</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Upcoming Shifts</h2>
+                        <button class="btn btn-outline btn-sm" id="view-all-shifts">View All</button>
+                    </div>
+                    
+                    <div id="upcoming-shifts">
+                        <div id="upcoming-shifts-loader" class="loader" style="display: none;">Loading shifts...</div>
+                        <p>No upcoming shifts scheduled.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Schedule Section -->
+            <div id="schedule-section" class="content-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>My Schedule</h2>
+                    </div>
+                    
+                    <div class="calendar" id="calendar">
+                        <div class="calendar-header">
+                            <div class="calendar-navigation">
+                                <button id="prev-month"><i data-feather="chevron-left"></i></button>
+                                <h3 class="calendar-title" id="calendar-title">June 2023</h3>
+                                <button id="next-month"><i data-feather="chevron-right"></i></button>
+                            </div>
+                            
+                            <div class="calendar-view-buttons">
+                                <button class="calendar-view-button active">Month</button>
+                                <button class="calendar-view-button">Week</button>
+                            </div>
+                        </div>
+                        
+                        <div id="calendar-grid">
+                            <!-- Calendar grid will be inserted here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Requests Section -->
+            <div id="requests-section" class="content-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>My Shift Change Requests</h2>
+                    </div>
+                    
+                    <div id="shift-requests">
+                        <div id="shift-requests-loader" class="loader" style="display: none;">Loading requests...</div>
+                        <p>No pending shift change requests.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notifications Section -->
+            <div id="notifications-section" class="content-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Notifications</h2>
+                        <button class="btn btn-outline btn-sm" id="mark-all-read">Mark All Read</button>
+                    </div>
+                    
+                    <div id="notifications">
+                        <div id="notifications-loader" class="loader" style="display: none;">Loading notifications...</div>
+                        <p>No new notifications.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Section -->
+            <div id="profile-section" class="content-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>My Profile</h2>
+                    </div>
+                    
+                    <div id="profile-info">
+                        <div id="profile-loader" class="loader" style="display: none;">Loading profile...</div>
+                        <p>Profile information will appear here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Shift Request Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="shift-request-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Request Shift Change</h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="shift-request-form">
+                    <input type="hidden" id="schedule-id" value="">
+                    
+                    <div class="form-group">
+                        <label>Shift Details</label>
+                        <div id="shift-details"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="request-type">Request Type</label>
+                        <select id="request-type" required>
+                            <option value="swap">Swap with another staff</option>
+                            <option value="cover">Request time off (need cover)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="swap-staff-container">
+                        <label for="swap-staff">Swap with Staff Member</label>
+                        <select id="swap-staff" required>
+                            <option value="">-- Select Staff Member --</option>
+                            <!-- Staff options will be populated dynamically -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="request-reason">Reason for Request</label>
+                        <textarea id="request-reason" rows="4" placeholder="Provide a reason for your shift change request" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="modal-cancel">Cancel</button>
+                <button class="btn btn-primary" id="submit-request">Submit Request</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/common.js"></script>
+    <script src="/assets/js/dashboard.js"></script>
+    <script>
+        // Initialize feather icons
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+            
+            // Additional direct dropdown handler (backup solution)
+            setTimeout(function() {
+                const userMenu = document.getElementById('user-menu');
+                const userDropdown = document.getElementById('user-dropdown');
+                
+                if (userMenu && userDropdown) {
+                    console.log('Setting up direct dropdown handler in dashboard.html');
+                    
+                    // Remove any existing event listeners
+                    const newUserMenu = userMenu.cloneNode(true);
+                    userMenu.parentNode.replaceChild(newUserMenu, userMenu);
+                    
+                    // Add direct click event
+                    newUserMenu.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        userDropdown.classList.toggle('show');
+                        console.log('Dashboard dropdown toggled directly');
+                    });
+                    
+                    // Prevent the dropdown from closing when clicking inside it
+                    userDropdown.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                    });
+                    
+                    // Close the dropdown when clicking outside
+                    document.addEventListener('click', function() {
+                        if (userDropdown.classList.contains('show')) {
+                            userDropdown.classList.remove('show');
+                        }
+                    });
+                }
+            }, 200);
+        });
+    </script>
+</body>
+</html>

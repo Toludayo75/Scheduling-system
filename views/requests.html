@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Requests | UITH Physiotherapy</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">UITH Physio</div>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i data-feather="menu"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="/views/admin.html" class="sidebar-item">
+                    <i data-feather="home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/views/staff.html" class="sidebar-item">
+                    <i data-feather="users"></i>
+                    <span>Staff</span>
+                </a>
+                <a href="/views/schedules.html" class="sidebar-item">
+                    <i data-feather="calendar"></i>
+                    <span>Schedules</span>
+                </a>
+                <a href="/views/requests.html" class="sidebar-item active">
+                    <i data-feather="clock"></i>
+                    <span>Shift Requests</span>
+                </a>
+                <a href="/views/schedule-view.html" class="sidebar-item">
+                    <i data-feather="grid"></i>
+                    <span>Schedule View</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <a href="#" id="logout-button" class="sidebar-item">
+                    <i data-feather="log-out"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <div class="content-header">
+                <h1>Shift Requests</h1>
+                
+                <div class="user-profile">
+                    <div class="user-menu" id="user-menu">
+                        <div class="user-avatar" id="user-avatar">AD</div>
+                        <span class="user-name" id="user-name">Admin User</span>
+                        <i data-feather="chevron-down"></i>
+                    </div>
+                    
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="/views/profile.html" class="user-dropdown-item">
+                            <i data-feather="user"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="/views/settings.html" class="user-dropdown-item">
+                            <i data-feather="settings"></i>
+                            <span>Settings</span>
+                        </a>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="#" id="logout-button-dropdown" class="user-dropdown-item">
+                            <i data-feather="log-out"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <div class="controls-bar">
+                    <div class="form-group">
+                        <label for="status-filter">Filter by Status:</label>
+                        <select id="status-filter" class="form-control">
+                            <option value="">All Requests</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Shift Swap Requests</h2>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Requester</th>
+                                        <th>Request Type</th>
+                                        <th>Date Requested</th>
+                                        <th>Shift Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="requests-table-body">
+                                    <!-- Shift requests will be loaded here dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal for viewing request details -->
+            <div class="modal" id="request-details-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Request Details</h3>
+                        <button class="modal-close" id="request-details-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="request-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Requester:</span>
+                                <span class="detail-value" id="request-requester"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Request Type:</span>
+                                <span class="detail-value" id="request-type"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Date Requested:</span>
+                                <span class="detail-value" id="request-date"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Shift Date:</span>
+                                <span class="detail-value" id="request-shift-date"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Shift Time:</span>
+                                <span class="detail-value" id="request-shift-time"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Status:</span>
+                                <span class="detail-value status-badge" id="request-status"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Reason:</span>
+                                <span class="detail-value" id="request-reason"></span>
+                            </div>
+                            
+                            <div id="swap-details" class="hidden">
+                                <h4>Swap Details</h4>
+                                <div class="detail-row">
+                                    <span class="detail-label">Swap With:</span>
+                                    <span class="detail-value" id="swap-with"></span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Swap Date:</span>
+                                    <span class="detail-value" id="swap-date"></span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Swap Shift:</span>
+                                    <span class="detail-value" id="swap-shift"></span>
+                                </div>
+                            </div>
+                            
+                            <div id="pending-actions" class="hidden">
+                                <div class="modal-footer mt-4">
+                                    <button type="button" class="btn btn-danger" id="reject-request-btn">Reject</button>
+                                    <button type="button" class="btn btn-success" id="approve-request-btn">Approve</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/common.js"></script>
+    <script src="/assets/js/requests.js"></script>
+    <script>
+        // Initialize feather icons
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+            
+            // Additional direct dropdown handler (backup solution)
+            setTimeout(function() {
+                const userMenu = document.getElementById('user-menu');
+                const userDropdown = document.getElementById('user-dropdown');
+                
+                if (userMenu && userDropdown) {
+                    console.log('Setting up direct dropdown handler in requests.html');
+                    
+                    // Remove any existing event listeners
+                    const newUserMenu = userMenu.cloneNode(true);
+                    userMenu.parentNode.replaceChild(newUserMenu, userMenu);
+                    
+                    // Add direct click event
+                    newUserMenu.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        userDropdown.classList.toggle('show');
+                        console.log('Requests dropdown toggled directly');
+                    });
+                    
+                    // Prevent the dropdown from closing when clicking inside it
+                    userDropdown.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                    });
+                    
+                    // Close the dropdown when clicking outside
+                    document.addEventListener('click', function() {
+                        if (userDropdown.classList.contains('show')) {
+                            userDropdown.classList.remove('show');
+                        }
+                    });
+                }
+            }, 200);
+        });
+    </script>
+</body>
+</html>

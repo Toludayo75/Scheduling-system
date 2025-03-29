@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule View | UITH Physiotherapy</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">UITH Physio</div>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i data-feather="menu"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="/views/admin.html" class="sidebar-item">
+                    <i data-feather="home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/views/staff.html" class="sidebar-item">
+                    <i data-feather="users"></i>
+                    <span>Staff</span>
+                </a>
+                <a href="/views/schedules.html" class="sidebar-item">
+                    <i data-feather="calendar"></i>
+                    <span>Schedules</span>
+                </a>
+                <a href="/views/requests.html" class="sidebar-item">
+                    <i data-feather="clock"></i>
+                    <span>Shift Requests</span>
+                </a>
+                <a href="/views/schedule-view.html" class="sidebar-item active">
+                    <i data-feather="grid"></i>
+                    <span>Schedule View</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <a href="#" id="logout-button" class="sidebar-item">
+                    <i data-feather="log-out"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <div class="content-header">
+                <h1>Schedule Calendar View</h1>
+                
+                <div class="user-profile">
+                    <div class="user-menu" id="user-menu">
+                        <div class="user-avatar" id="user-avatar">AD</div>
+                        <span class="user-name" id="user-name">Admin User</span>
+                        <i data-feather="chevron-down"></i>
+                    </div>
+                    
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="/views/profile.html" class="user-dropdown-item">
+                            <i data-feather="user"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="/views/settings.html" class="user-dropdown-item">
+                            <i data-feather="settings"></i>
+                            <span>Settings</span>
+                        </a>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="#" id="logout-button-dropdown" class="user-dropdown-item">
+                            <i data-feather="log-out"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <div class="controls-bar">
+                    <div class="form-group">
+                        <label for="staff-filter">Filter by Staff:</label>
+                        <select id="staff-filter" class="form-control">
+                            <option value="">All Staff</option>
+                            <!-- Staff options will be loaded dynamically -->
+                        </select>
+                    </div>
+                    <div class="month-navigation">
+                        <button id="prev-month" class="btn btn-icon">
+                            <i data-feather="chevron-left"></i>
+                        </button>
+                        <h3 id="current-month">March 2025</h3>
+                        <button id="next-month" class="btn btn-icon">
+                            <i data-feather="chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color morning-shift"></div>
+                            <span>Morning</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color afternoon-shift"></div>
+                            <span>Afternoon</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color night-shift"></div>
+                            <span>Night</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body no-padding">
+                        <div class="calendar" id="schedule-calendar">
+                            <!-- Calendar will be generated dynamically -->
+                            <div class="calendar-header">
+                                <div class="calendar-cell">Sun</div>
+                                <div class="calendar-cell">Mon</div>
+                                <div class="calendar-cell">Tue</div>
+                                <div class="calendar-cell">Wed</div>
+                                <div class="calendar-cell">Thu</div>
+                                <div class="calendar-cell">Fri</div>
+                                <div class="calendar-cell">Sat</div>
+                            </div>
+                            <div class="calendar-body" id="calendar-body">
+                                <!-- Calendar cells will be generated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal for viewing schedule details -->
+            <div class="modal" id="schedule-details-modal">
+                <div class="modal-header">
+                    <h3 id="schedule-details-title" class="modal-title">Schedule Details</h3>
+                    <button class="modal-close" id="schedule-details-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="day-schedules">
+                        <!-- Day schedules will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/common.js"></script>
+    <script src="/assets/js/schedule-view.js"></script>
+    <script>
+        // Initialize feather icons
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+            
+            // Additional direct dropdown handler (backup solution)
+            setTimeout(function() {
+                const userMenu = document.getElementById('user-menu');
+                const userDropdown = document.getElementById('user-dropdown');
+                
+                if (userMenu && userDropdown) {
+                    console.log('Setting up direct dropdown handler in schedule-view.html');
+                    
+                    // Remove any existing event listeners
+                    const newUserMenu = userMenu.cloneNode(true);
+                    userMenu.parentNode.replaceChild(newUserMenu, userMenu);
+                    
+                    // Add direct click event
+                    newUserMenu.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        userDropdown.classList.toggle('show');
+                        console.log('Schedule-view dropdown toggled directly');
+                    });
+                    
+                    // Prevent the dropdown from closing when clicking inside it
+                    userDropdown.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                    });
+                    
+                    // Close the dropdown when clicking outside
+                    document.addEventListener('click', function() {
+                        if (userDropdown.classList.contains('show')) {
+                            userDropdown.classList.remove('show');
+                        }
+                    });
+                }
+            }, 200);
+        });
+    </script>
+</body>
+</html>

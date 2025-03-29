@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UITH Physiotherapy Scheduling System</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js"></script>
+    <script>
+        // Check auth status and redirect accordingly
+        window.onload = function() {
+            fetch('/api/user', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) return response.json();
+                throw new Error('Not authenticated');
+            })
+            .then(user => {
+                console.log("User data:", user);
+                if (user.role_name === 'Admin') {
+                    window.location.href = '/views/admin.html';
+                } else if (user.role_name === 'Physiotherapist') {
+                    window.location.href = '/views/dashboard.html';
+                } else if (user.role_name === 'System Admin') {
+                    window.location.href = '/views/system-admin.html';
+                } else {
+                    window.location.href = '/views/auth.html';
+                }
+            })
+            .catch(() => {
+                window.location.href = '/views/auth.html';
+            });
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+        <div class="quick-links" style="margin-top: 20px; text-align: center;">
+            <p>Direct Links (for testing):</p>
+            <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; max-width: 600px; margin: 0 auto;">
+                <a href="/views/admin.html" style="padding: 10px; background: #3b82f6; color: white; border-radius: 4px; text-decoration: none; margin: 5px;">Admin Dashboard</a>
+                <a href="/views/staff.html" style="padding: 10px; background: #3b82f6; color: white; border-radius: 4px; text-decoration: none; margin: 5px;">Staff Management</a>
+                <a href="/views/schedules.html" style="padding: 10px; background: #3b82f6; color: white; border-radius: 4px; text-decoration: none; margin: 5px;">Schedules</a>
+                <a href="/views/requests.html" style="padding: 10px; background: #3b82f6; color: white; border-radius: 4px; text-decoration: none; margin: 5px;">Shift Requests</a>
+                <a href="/views/schedule-view.html" style="padding: 10px; background: #3b82f6; color: white; border-radius: 4px; text-decoration: none; margin: 5px;">Calendar View</a>
+                <a href="/views/profile.html" style="padding: 10px; background: #3b82f6; color: white; border-radius: 4px; text-decoration: none; margin: 5px;">User Profile</a>
+                <a href="/views/settings.html" style="padding: 10px; background: #3b82f6; color: white; border-radius: 4px; text-decoration: none; margin: 5px;">Settings</a>
+                <a href="/views/dashboard.html" style="padding: 10px; background: #3b82f6; color: white; border-radius: 4px; text-decoration: none; margin: 5px;">Staff Dashboard</a>
+                <a href="/views/auth.html" style="padding: 10px; background: #3b82f6; color: white; border-radius: 4px; text-decoration: none; margin: 5px;">Login Page</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

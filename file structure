@@ -1,0 +1,71 @@
+uith-physiotherapy-scheduler/
+│
+├── .env                           # Environment variables
+├── package.json                   # Project dependencies
+├── package-lock.json              # Dependency lock file
+├── server.js                      # Main application entry point
+├── index.html                     # Main landing page
+│
+├── assets/                        # Static assets
+│   ├── css/
+│   │   ├── dashboard.css          # Dashboard styles
+│   │   └── main.css               # Main application styles
+│   │
+│   ├── js/
+│   │   ├── admin.js               # Admin page functionality
+│   │   ├── api.js                 # API client library
+│   │   ├── common.js              # Shared functionality
+│   │   ├── dashboard.js           # Dashboard functionality
+│   │   ├── profile.js             # Profile page functionality
+│   │   ├── schedule-view.js       # Schedule view functionality
+│   │   ├── schedules.js           # Schedule management
+│   │   ├── staff.js               # Staff management
+│   │   └── utils.js               # Utility functions
+│   │
+│   └── icons/                     # Application icons and images
+│
+├── config/
+│   └── database.js                # Database configuration
+│
+├── controllers/
+│   ├── authController.js          # Authentication controller
+│   ├── notificationController.js  # Notification controller
+│   ├── reportController.js        # Reports controller
+│   ├── scheduleController.js      # Schedule controller
+│   ├── shiftRequestController.js  # Shift request controller
+│   └── userController.js          # User management controller
+│
+├── middleware/
+│   ├── auth.js                    # Authentication middleware
+│   ├── logger.js                  # Logging middleware
+│   └── roleCheck.js               # Role-based permissions
+│
+├── models/
+│   ├── notificationModel.js       # Notification data model
+│   ├── roleModel.js               # Role data model
+│   ├── scheduleModel.js           # Schedule data model
+│   ├── shiftRequestModel.js       # Shift request data model
+│   └── userModel.js               # User data model
+│
+├── routes/
+│   ├── auth.js                    # Authentication routes
+│   ├── notifications.js           # Notification routes
+│   ├── reports.js                 # Reports routes
+│   ├── schedules.js               # Schedule routes
+│   ├── shiftRequests.js           # Shift request routes
+│   └── users.js                   # User management routes
+│
+├── scripts/
+│   └── seed-dummy-data.js         # Database seeding script
+│
+├── logs/                          # Log files directory
+│   └── app.log                    # Application logs
+│
+└── views/
+    ├── admin.html                 # Admin dashboard
+    ├── auth.html                  # Login page
+    ├── dashboard.html             # Main user dashboard
+    ├── profile.html               # User profile page
+    ├── schedule-view.html         # Schedule detailed view
+    ├── schedules.html             # Schedule management
+    └── staff.html                 # Staff management

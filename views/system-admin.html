@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Admin | UITH Physiotherapy Scheduling System</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js"></script>
+    <style>
+        /* Additional styles specific to system admin */
+        .log-entry {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        
+        .log-timestamp {
+            font-size: 0.8rem;
+            color: var(--light-text);
+        }
+        
+        .log-level {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 8px;
+        }
+        
+        .log-level.info {
+            background-color: #dbeafe;
+            color: var(--info-color);
+        }
+        
+        .log-level.warning {
+            background-color: #fef3c7;
+            color: var(--warning-color);
+        }
+        
+        .log-level.error {
+            background-color: #fee2e2;
+            color: var(--error-color);
+        }
+        
+        .user-role-select {
+            width: 150px;
+        }
+        
+        .system-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        
+        .stat-label {
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">UITH System</div>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i data-feather="menu"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="#dashboard" class="sidebar-item active" id="dashboard-tab" data-target="dashboard-content">
+                    <i data-feather="home"></i> Dashboard
+                </a>
+                <a href="#users" class="sidebar-item" id="users-tab" data-target="users-content">
+                    <i data-feather="users"></i> User Management
+                </a>
+                <a href="#logs" class="sidebar-item" id="logs-tab" data-target="logs-content">
+                    <i data-feather="activity"></i> System Logs
+                </a>
+                <a href="#backup" class="sidebar-item" id="backup-tab" data-target="backup-content">
+                    <i data-feather="database"></i> Backup & Restore
+                </a>
+                <a href="#reports" class="sidebar-item" id="reports-tab" data-target="reports-content">
+                    <i data-feather="bar-chart-2"></i> System Reports
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <button id="logout-button" class="btn btn-outline" style="width: 100%;">
+                    <i data-feather="log-out"></i> Logout
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <div class="content-header">
+                <h1 id="welcome-message">System Administration</h1>
+                
+                <div class="user-profile">
+                    <div class="user-menu" id="user-menu">
+                        <div class="user-avatar" id="user-avatar">SA</div>
+                        <div class="user-name" id="user-name">System Admin</div>
+                        <i data-feather="chevron-down"></i>
+                    </div>
+                    
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="#profile" class="user-dropdown-item">
+                            <i data-feather="user"></i> Profile
+                        </a>
+                        <a href="#settings" class="user-dropdown-item">
+                            <i data-feather="settings"></i> Settings
+                        </a>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="#" class="user-dropdown-item" id="logout-button-dropdown">
+                            <i data-feather="log-out"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="tab-content active" id="dashboard-content">
+                <div class="system-stats">
+                    <div class="stat-card">
+                        <i data-feather="users" style="color: var(--primary-color);"></i>
+                        <div class="stat-value" id="total-users-count">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <i data-feather="calendar" style="color: var(--secondary-color);"></i>
+                        <div class="stat-value" id="total-schedules-count">0</div>
+                        <div class="stat-label">Total Schedules</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <i data-feather="file-text" style="color: var(--warning-color);"></i>
+                        <div class="stat-value" id="total-requests-count">0</div>
+                        <div class="stat-label">Shift Requests</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <i data-feather="activity" style="color: var(--error-color);"></i>
+                        <div class="stat-value" id="error-logs-count">0</div>
+                        <div class="stat-label">Error Logs</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>System Overview</h2>
+                    </div>
+                    
+                    <div id="system-overview">
+                        <div id="system-loader" class="loader" style="display: none;">Loading system information...</div>
+                        
+                        <div class="system-info">
+                            <div class="info-group">
+                                <h3>User Statistics</h3>
+                                <p><strong>Administrators:</strong> <span id="admin-count">0</span></p>
+                                <p><strong>Physiotherapists:</strong> <span id="physio-count">0</span></p>
+                                <p><strong>System Admins:</strong> <span id="sysadmin-count">0</span></p>
+                                <p><strong>Active Users (Last 7 Days):</strong> <span id="active-users">0</span></p>
+                            </div>
+                            
+                            <div class="info-group">
+                                <h3>Recent Activities</h3>
+                                <div id="recent-activities">
+                                    <div class="loader" style="display: none;">Loading activities...</div>
+                                    <p>No recent activities found.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Quick Actions</h2>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" id="create-user-btn">
+                            <i data-feather="user-plus"></i> Create New User
+                        </button>
+                        <button class="btn btn-secondary" id="view-logs-btn">
+                            <i data-feather="activity"></i> View System Logs
+                        </button>
+                        <button class="btn btn-outline" id="backup-now-btn">
+                            <i data-feather="download"></i> Backup Database
+                        </button>
+                        <button class="btn btn-danger" id="purge-logs-btn">
+                            <i data-feather="trash-2"></i> Purge Old Logs
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- User Management Content -->
+            <div class="tab-content" id="users-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>User Management</h2>
+                        <button class="btn btn-primary btn-sm" id="add-user-btn">
+                            <i data-feather="user-plus"></i> Add User
+                        </button>
+                    </div>
+                    
+                    <div class="filters mb-4">
+                        <div class="form-group">
+                            <label for="filter-role">Filter by Role</label>
+                            <select id="filter-role">
+                                <option value="all">All Roles</option>
+                                <option value="1">Administrator</option>
+                                <option value="2">Physiotherapist</option>
+                                <option value="3">System Admin</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="search-user">Search</label>
+                            <input type="text" id="search-user" placeholder="Search by name or email">
+                        </div>
+                    </div>
+                    
+                    <div id="users-list">
+                        <div id="users-loader" class="loader" style="display: none;">Loading users...</div>
+                        <!-- Users list will be loaded by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Logs Content -->
+            <div class="tab-content" id="logs-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>System Logs</h2>
+                        <div>
+                            <button class="btn btn-outline btn-sm" id="refresh-logs">
+                                <i data-feather="refresh-cw"></i> Refresh
+                            </button>
+                            <button class="btn btn-danger btn-sm" id="clear-logs">
+                                <i data-feather="trash-2"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="filters mb-4">
+                        <div class="form-group">
+                            <label for="filter-log-level">Filter by Level</label>
+                            <select id="filter-log-level">
+                                <option value="all">All Levels</option>
+                                <option value="info">Info</option>
+                                <option value="warning">Warning</option>
+                                <option value="error">Error</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="filter-log-date">Filter by Date</label>
+                            <input type="date" id="filter-log-date">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="search-logs">Search</label>
+                            <input type="text" id="search-logs" placeholder="Search logs">
+                        </div>
+                    </div>
+                    
+                    <div id="logs-list">
+                        <div id="logs-loader" class="loader" style="display: none;">Loading logs...</div>
+                        <!-- Logs will be loaded by JavaScript -->
+                    </div>
+                    
+                    <div class="pagination mt-4">
+                        <button class="btn btn-outline btn-sm" id="prev-logs-page" disabled>
+                            <i data-feather="chevron-left"></i> Previous
+                        </button>
+                        <span id="logs-page-info">Page 1 of 1</span>
+                        <button class="btn btn-outline btn-sm" id="next-logs-page" disabled>
+                            Next <i data-feather="chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Backup & Restore Content -->
+            <div class="tab-content" id="backup-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Database Backup & Restore</h2>
+                    </div>
+                    
+                    <div id="backup-section">
+                        <h3>Create Backup</h3>
+                        <p>Create a backup of the entire database. This includes all user data, schedules, and system settings.</p>
+                        <button class="btn btn-primary" id="create-backup-btn">
+                            <i data-feather="download"></i> Create Backup
+                        </button>
+                        
+                        <div class="mt-4">
+                            <h3>Backup History</h3>
+                            <div id="backup-history">
+                                <div id="backup-loader" class="loader" style="display: none;">Loading backup history...</div>
+                                <!-- Backup history will be loaded by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h3>Restore Database</h3>
+                            <p class="text-warning">Warning: Restoring a backup will replace all current data. Make sure to create a backup first.</p>
+                            
+                            <div class="form-group">
+                                <label for="restore-file">Select Backup File</label>
+                                <select id="restore-file">
+                                    <option value="">Select a backup file</option>
+                                    <!-- Backup files will be loaded by JavaScript -->
+                                </select>
+                            </div>
+                            
+                            <button class="btn btn-danger" id="restore-backup-btn">
+                                <i data-feather="upload"></i> Restore Backup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Reports Content -->
+            <div class="tab-content" id="reports-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>System Reports</h2>
+                    </div>
+                    
+                    <div class="reports-section">
+                        <div class="report-filters">
+                            <div class="form-group">
+                                <label for="system-report-type">Report Type</label>
+                                <select id="system-report-type">
+                                    <option value="user-activity">User Activity</option>
+                                    <option value="system-usage">System Usage</option>
+                                    <option value="error-summary">Error Summary</option>
+                                    <option value="performance">System Performance</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="system-report-date-range">Date Range</label>
+                                <select id="system-report-date-range">
+                                    <option value="today">Today</option>
+                                    <option value="yesterday">Yesterday</option>
+                                    <option value="this-week">This Week</option>
+                                    <option value="this-month">This Month</option>
+                                    <option value="last-month">Last Month</option>
+                                    <option value="custom">Custom Range</option>
+                                </select>
+                            </div>
+                            
+                            <div class="date-range-inputs" style="display: none;">
+                                <div class="form-group">
+                                    <label for="system-report-start-date">Start Date</label>
+                                    <input type="date" id="system-report-start-date">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="system-report-end-date">End Date</label>
+                                    <input type="date" id="system-report-end-date">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <button class="btn btn-primary" id="generate-system-report-btn">Generate Report</button>
+                            </div>
+                        </div>
+                        
+                        <div id="system-report-result">
+                            <!-- Report results will be loaded here -->
+                            <p>Select report type and date range to generate a system report.</p>
+                        </div>
+                        
+                        <div class="export-options" style="display: none;">
+                            <button class="btn btn-outline" id="export-system-csv">
+                                <i data-feather="download"></i> Export as CSV
+                            </button>
+                            <button class="btn btn-outline" id="export-system-pdf">
+                                <i data-feather="file"></i> Export as PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit User Modal -->
+    <div class="modal-overlay" id="user-modal-overlay">
+        <div class="modal" id="user-modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="user-modal-title">Add New User</h3>
+                <button class="modal-close" id="user-modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="user-form">
+                    <input type="hidden" id="user-id" value="">
+                    
+                    <div class="form-group">
+                        <label for="user-firstname">First Name</label>
+                        <input type="text" id="user-firstname" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-lastname">Last Name</label>
+                        <input type="text" id="user-lastname" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-email">Email</label>
+                        <input type="email" id="user-email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-password">Password</label>
+                        <input type="password" id="user-password">
+                        <small>Leave blank to keep current password (for editing users)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-role">Role</label>
+                        <select id="user-role" required>
+                            <option value="1">Administrator</option>
+                            <option value="2">Physiotherapist</option>
+                            <option value="3">System Admin</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-contract-type">Contract Type</label>
+                        <select id="user-contract-type" required>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="user-modal-cancel">Cancel</button>
+                <button class="btn btn-primary" id="user-modal-submit">Save User</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/system-admin.js"></script>
+    <script>
+        // Initialize feather icons
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+            
+            // Initialize tab functionality
+            const tabs = document.querySelectorAll('.sidebar-item');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all tabs and tab contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    const target = this.getAttribute('data-target');
+                    document.getElementById(target).classList.add('active');
+                });
+            });
+            
+            // Initialize user dropdown
+            const userMenu = document.getElementById('user-menu');
+            const userDropdown = document.getElementById('user-dropdown');
+            
+            if (userMenu && userDropdown) {
+                userMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('show');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function() {
+                    userDropdown.classList.remove('show');
+                });
+            }
+            
+            // Handle logout
+            const logoutButton = document.getElementById('logout-button');
+            const logoutButtonDropdown = document.getElementById('logout-button-dropdown');
+            
+            [logoutButton, logoutButtonDropdown].forEach(button => {
+                if (button) {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        fetch('/api/logout', {
+                            method: 'POST',
+                            credentials: 'include'
+                        })
+                        .then(() => {
+                            window.location.href = '/views/auth.html';
+                        })
+                        .catch(error => {
+                            console.error('Logout failed:', error);
+                            alert('Failed to logout. Please try again.');
+                        });
+                    });
+                }
+            });
+            
+            // Load user info
+            fetch('/api/user', {
+                method: 'GET',
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(user => {
+                // Set user name
+                const userNameElement = document.getElementById('user-name');
+                if (userNameElement) {
+                    userNameElement.textContent = `${user.firstname} ${user.lastname}`;
+                }
+                
+                // Set user avatar initials
+                const userAvatarElement = document.getElementById('user-avatar');
+                if (userAvatarElement) {
+                    userAvatarElement.textContent = `${user.firstname.charAt(0)}${user.lastname.charAt(0)}`;
+                }
+                
+                // Check if user is system admin
+                if (user.role_id !== '3') {
+                    // Redirect based on role
+                    if (user.role_id === '1') {
+                        window.location.href = '/views/admin.html';
+                    } else {
+                        window.location.href = '/views/dashboard.html';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Failed to load user info:', error);
+                window.location.href = '/views/auth.html';
+            });
+            
+            // Load system stats
+            fetch('/api/reports/system-stats', {
+                method: 'GET',
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(stats => {
+                document.getElementById('total-users-count').textContent = stats.users || 0;
+                document.getElementById('total-schedules-count').textContent = stats.schedules || 0;
+                document.getElementById('total-requests-count').textContent = stats.requests || 0;
+                document.getElementById('error-logs-count').textContent = stats.errorLogs || 0;
+                
+                document.getElementById('admin-count').textContent = stats.adminUsers || 0;
+                document.getElementById('physio-count').textContent = stats.physioUsers || 0;
+                document.getElementById('sysadmin-count').textContent = stats.sysadminUsers || 0;
+                document.getElementById('active-users').textContent = stats.activeUsers || 0;
+            })
+            .catch(error => {
+                console.error('Failed to load system stats:', error);
+            });
+        });
+    </script>
+</body>
+</html>

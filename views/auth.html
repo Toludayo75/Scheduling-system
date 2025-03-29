@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | UITH Physiotherapy Scheduling System</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/auth.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js"></script>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-form-container">
+            <div class="auth-form">
+                <h2>UITH Physiotherapy</h2>
+                
+                <div class="auth-tabs">
+                    <div class="auth-tab active" id="login-tab">Login</div>
+                </div>
+                
+                <!-- Login Form -->
+                <div class="auth-form-content active" id="login-form">
+                    <form id="login-form-element">
+                        <div class="alert alert-error" id="login-error" style="display: none;"></div>
+                        
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" name="email" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;" id="login-button">Login</button>
+                        </div>
+                    </form>
+                </div>
+                
+
+                
+                <div class="role-info">
+                    <h3>System Roles</h3>
+                    <ul>
+                        <li><strong>Physiotherapist:</strong> View schedule, request shift changes, receive notifications</li>
+                        <li><strong>Administrator:</strong> Manage staff schedules, approve/reject shift changes, generate reports</li>
+                        <li><strong>System Admin:</strong> Manage users, monitor system logs, system maintenance</li>
+                    </ul>
+                    <p class="mt-2"><small>Note: New user accounts can only be created by administrators. Please contact your department administrator if you need an account.</small></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="auth-hero">
+            <div class="auth-hero-content">
+                <h1>UITH Physiotherapy Scheduling System</h1>
+                <p>Welcome to the Department of Physiotherapy scheduling system at University of Ilorin Teaching Hospital. This platform helps manage duty schedules, shift requests, and staff assignments efficiently.</p>
+                <p>Our system ensures fair distribution of workload, streamlines schedule management, and facilitates clear communication among staff members.</p>
+                <p>Please login with your credentials to access your schedule and system features.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/auth.js"></script>
+</body>
+</html>
